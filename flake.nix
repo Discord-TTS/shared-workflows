@@ -28,7 +28,7 @@
             name = package.name;
             tag = "latest-${pkgs.stdenv.system}";
 
-            config.Cmd = pkgs.lib.getExe package;
+            config.Cmd = [ (pkgs.lib.getExe package) ];
           };
         };
     };
