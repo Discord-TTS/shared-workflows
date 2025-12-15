@@ -7,6 +7,7 @@
           pkgs,
           package,
           extraDevTools ? [ ],
+          extraDockerContents ? [ ],
         }:
         {
           nixpkgs = pkgs;
@@ -27,6 +28,8 @@
           dockerImage = pkgs.dockerTools.buildLayeredImage {
             name = package.name;
             tag = "latest-${pkgs.stdenv.system}";
+
+            contents = extraDockerContents;
 
             config.Cmd = [ (pkgs.lib.getExe package) ];
           };
