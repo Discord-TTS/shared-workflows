@@ -6,6 +6,7 @@
         {
           pkgs,
           package,
+          disableFortify ? false,
           extraDevTools ? [ ],
           extraDockerContents ? [ ],
         }:
@@ -23,6 +24,7 @@
               ]);
 
             RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
+            hardeningDisable = pkgs.lib.optionals disableFortify [ "fortify" ];
           };
 
           dockerImage = pkgs.dockerTools.buildLayeredImage {
