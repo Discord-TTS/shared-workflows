@@ -6,6 +6,9 @@ on:
       repo-name:
         required: true
         type: string
+      extra-tag:
+        required: true
+        type: string
     secrets:
       DOCKERHUB_USERNAME:
         required: true
@@ -48,6 +51,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Merge intermediate Docker Images and upload.
         env:
+          EXTRA_TAG: ${{ inputs.extra-tag }}
           REPO_PATH: ${{ secrets.DOCKERHUB_USERNAME }}/${{inputs.repo-name}}
         run: |
           AMD_PATH=docker-archive:x86_64-linux.archive.tar.gz/result
@@ -59,3 +63,4 @@ jobs:
           ARM_DIGEST=$(skopeo inspect $ARM_PATH | jq .Digest -r)
 
           docker buildx imagetools create --tag $REPO_PATH:latest $REPO_PATH@$AMD_DIGEST $REPO_PATH@$ARM_DIGEST
+          docker buildx imagetools create --tag $REPO_PATH:$EXTRA_TAG $REPO_PATH@$AMD_DIGEST $REPO_PATH@$ARM_DIGEST
